@@ -1,0 +1,22 @@
+# Embedding Inference Benchmark - Python Dependencies
+#
+# Install with: pip install -r requirements.txt
+
+# Google Cloud Vertex AI SDK for model deployment and endpoint management
+google-cloud-aiplatform>=1.60.0
+
+# Async HTTP client for high-concurrency load generation
+aiohttp>=3.9.0
+
+# YAML parsing for configuration files
+pyyaml>=6.0
+
+# Data analysis and tabulation for benchmark results
+pandas>=2.0.0
+tabulate>=0.9.0
+
+# Progress bars for long-running benchmark scenarios
+tqdm>=4.65.0
+
+# NumPy for statistical calculations (percentiles, etc.)
+numpy>=1.24.0

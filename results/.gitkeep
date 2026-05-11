@@ -1,0 +1,2 @@
+# This directory stores benchmark results (JSON, CSV, and Markdown reports).
+# It is created empty and populated when benchmarks are run.

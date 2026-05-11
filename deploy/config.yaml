@@ -1,0 +1,24 @@
+# =============================================================================
+# Benchmark Configuration
+# =============================================================================
+# Update these values for your GCP project before running.
+# =============================================================================
+
+gcp:
+  project_id: "YOUR_PROJECT_ID"
+  region: "europe-west4"  # RTX Pro 6000 regions: us-central1, us-east4, europe-west4
+
+model:
+  name: "jinaai/jina-embeddings-v5-text-small"
+  task: "embed"
+
+gpu:
+  type: "nvidia-rtx-pro-6000"
+  machine_type: "g4-standard-48"
+  vram_gb: 96
+  count: 1
+
+benchmark:
+  warmup_seconds: 10
+  measurement_seconds: 60
+  concurrency_levels: [1, 4, 16, 32, 64, 128]
