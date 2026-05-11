@@ -2,6 +2,27 @@
 
 A complete, reproducible benchmarking recipe for evaluating **Jina Embeddings V5 Text Small** on Google Cloud Vertex AI using **NVIDIA RTX Pro 6000** (96GB VRAM) GPUs. This benchmark measures throughput, latency, and cost efficiency for high-throughput batch embedding inference workloads.
 
+## Test Configuration
+
+| Component | Value |
+|-----------|-------|
+| **Model** | `jinaai/jina-embeddings-v5-text-small` (230M params) |
+| **GPU** | NVIDIA RTX Pro 6000 (96GB VRAM) |
+| **Machine Type** | `g4-standard-48` (48 vCPU, 192GB RAM) |
+| **Platform** | Google Cloud Vertex AI (managed endpoint) |
+| **Serving Framework** | vLLM v0.20.1 |
+| **Precision** | BF16 |
+| **Batch Size** | 16 texts per request |
+| **Input Length** | ~512 tokens per text (~250 words) |
+| **Tokens/Request** | ~8,192 (16 × 512) |
+| **Max Context Window** | 32,768 tokens |
+| **max_num_seqs** | 512 |
+| **gpu_memory_utilization** | 0.95 |
+| **max_num_batched_tokens** | 65,536 |
+| **enforce_eager** | True (no CUDA graphs) |
+| **Region** | europe-west4 |
+| **Benchmark Duration** | 60s measurement + 10s warmup per concurrency level |
+
 ## Benchmark Results
 
 ### 1-GPU Performance (1× RTX Pro 6000, g4-standard-48)
