@@ -1,0 +1,11 @@
+scenario,concurrency,tokens_per_sec,tokens_per_min,requests_per_min,latency_p50_ms,latency_p95_ms,latency_p99_ms,latency_max_ms,error_rate,all_under_20s,total_requests,successful_requests,gpu_label
+ingest-default-chunk,1,8730.0,523797.6,63.9,996.8,1155.2,1737.4,1758.6,0.0000,True,63,63,configA-32k-1gpu
+ingest-default-chunk,4,35504.5,2130269.7,260.0,962.7,1104.7,1678.1,1775.5,0.0000,True,264,264,configA-32k-1gpu
+ingest-default-chunk,16,134075.3,8044519.7,982.0,970.0,1153.6,1699.0,1746.2,0.0010,True,996,995,configA-32k-1gpu
+ingest-default-chunk,32,210412.3,12624737.3,1541.1,1192.9,1558.8,2866.1,6686.3,0.0000,True,1569,1569,configA-32k-1gpu
+ingest-default-chunk,64,219962.2,13197730.5,1611.1,2375.1,2846.2,3104.4,3156.9,0.0000,True,1668,1668,configA-32k-1gpu
+ingest-default-chunk,128,219669.5,13180168.0,1608.9,4716.4,5320.1,5435.1,5668.4,0.0000,True,1732,1732,configA-32k-1gpu
+ingest-max-context,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,58,0,configA-32k-1gpu
+ingest-max-context,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,237,0,configA-32k-1gpu
+ingest-max-context,16,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,769,0,configA-32k-1gpu
+ingest-max-context,32,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,850,0,configA-32k-1gpu

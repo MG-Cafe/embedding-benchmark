@@ -1,0 +1,11 @@
+scenario,concurrency,tokens_per_sec,tokens_per_min,requests_per_min,latency_p50_ms,latency_p95_ms,latency_p99_ms,latency_max_ms,error_rate,all_under_20s,total_requests,successful_requests,gpu_label
+ingest-default-chunk,1,8852.8,531170.7,64.8,1002.9,1150.2,1405.8,1741.9,0.0000,True,65,65,configA-8192
+ingest-default-chunk,4,35203.0,2112182.8,257.8,960.3,1133.0,1692.8,1714.8,0.0000,True,261,261,configA-8192
+ingest-default-chunk,16,137639.9,8258392.9,1008.1,964.0,1150.5,1699.3,1765.9,0.0000,True,1020,1020,configA-8192
+ingest-default-chunk,32,215480.8,12928850.7,1578.2,1202.3,1481.3,1892.8,2109.6,0.0000,True,1609,1609,configA-8192
+ingest-default-chunk,64,219596.7,13175802.7,1608.4,2374.5,2836.6,3084.0,3167.4,0.0000,True,1671,1671,configA-8192
+ingest-default-chunk,128,220013.6,13200817.9,1611.4,4718.5,5364.8,5469.0,5792.5,0.0000,True,1737,1737,configA-8192
+ingest-max-context,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,62,0,configA-8192
+ingest-max-context,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,230,0,configA-8192
+ingest-max-context,16,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,785,0,configA-8192
+ingest-max-context,32,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0000,True,839,0,configA-8192

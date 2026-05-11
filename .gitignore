@@ -22,12 +22,6 @@ env/
 .DS_Store
 Thumbs.db
 
-# Benchmark results (large files, keep reports only)
-results/*.json
-results/*.csv
-!results/.gitkeep
-!results/BENCHMARK_REPORT.md
-!results/cost_matrix.csv
 
 # Secrets
 .env
