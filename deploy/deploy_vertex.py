@@ -98,7 +98,13 @@ def build_container_args(config: dict, hw_config: dict) -> list[str]:
         "--max-model-len", str(model_config["max_model_len"]),
         "--dtype", model_config["dtype"],
         "--tensor-parallel-size", str(hw_config["tensor_parallel_size"]),
+        "--trust-remote-code",
+        "--max-num-seqs", "512",
+        "--gpu-memory-utilization", "0.95",
+        "--enforce-eager",
+        "--max-num-batched-tokens", "65536",
         "--disable-log-requests",
+        "--disable-log-stats",
     ]
 
 
@@ -224,7 +230,7 @@ def deploy_model(
     print(f"     -H 'Authorization: Bearer $(gcloud auth print-access-token)' \\")
     print(f"     -H 'Content-Type: application/json' \\")
     print(f"     -d '{{\"input\": [\"Hello world\"], \"model\": \"jinaai/jina-embeddings-v5-text-small\"}}' \\")
-    print(f"     https://{config['gcp']['region']}-aiplatform.googleapis.com/v1/{endpoint.resource_name}:predict")
+    print(f"     https://{config['gcp']['region']}-aiplatform.googleapis.com/v1/{endpoint.resource_name}:rawPredict")
     print(f"{'='*60}")
 
 

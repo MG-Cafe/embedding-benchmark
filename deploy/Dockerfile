@@ -94,4 +94,10 @@ CMD ["--model", "jinaai/jina-embeddings-v5-text-small", \
      "--max-model-len", "32768", \
      "--dtype", "bfloat16", \
      "--tensor-parallel-size", "1", \
-     "--disable-log-requests"]
+     "--trust-remote-code", \
+     "--max-num-seqs", "512", \
+     "--gpu-memory-utilization", "0.95", \
+     "--enforce-eager", \
+     "--max-num-batched-tokens", "65536", \
+     "--disable-log-requests", \
+     "--disable-log-stats"]

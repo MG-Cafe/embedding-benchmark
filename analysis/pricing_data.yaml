@@ -73,11 +73,16 @@ g4:
     cud_1yr_hourly_usd: 1.924
     cud_3yr_hourly_usd: 1.374
 
-  # g4-standard-48 with 2× RTX Pro 6000
+  # 2-node config: 2× g4-standard-48 each with 1× RTX Pro 6000
+  # Architecture: 2 separate Vertex AI replicas (nodes), load-balanced.
+  # Each node has 1 GPU. This is NOT tensor-parallel across 2 GPUs on 1 node.
+  # Pricing is 2× the single_gpu cost (2 independent VMs).
   dual_gpu:
     machine_type: "g4-standard-48"
-    accelerator_count: 2
+    accelerator_count: 1          # 1 GPU per node
+    num_nodes: 2                  # 2 separate Vertex AI replicas
     # TODO: Verify pricing from GCP console for your region
-    on_demand_hourly_usd: 6.108
-    cud_1yr_hourly_usd: 3.848
-    cud_3yr_hourly_usd: 2.749
+    # Total hourly cost = 2 × single-node cost
+    on_demand_hourly_usd: 6.108   # 2 × 3.054
+    cud_1yr_hourly_usd: 3.848     # 2 × 1.924
+    cud_3yr_hourly_usd: 2.749     # 2 × 1.374 (rounding)

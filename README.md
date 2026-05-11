@@ -188,6 +188,35 @@ python3 -u benchmark/run_benchmark.py \
   --gpu-label "1x-rtx-pro-6000" 2>&1 | tee results/my_benchmark.log
 ```
 
+### Step 5: Cleanup
+
+After benchmarking, undeploy the model and delete resources to stop billing:
+
+```bash
+# Get deployed model ID
+DEPLOYED_MODEL_ID=$(gcloud ai endpoints describe $ENDPOINT_ID \
+  --region=YOUR_REGION --project=YOUR_PROJECT_ID \
+  --format="value(deployedModels[0].id)")
+
+# Undeploy the model (stops GPU billing)
+gcloud ai endpoints undeploy-model $ENDPOINT_ID \
+  --region=YOUR_REGION \
+  --project=YOUR_PROJECT_ID \
+  --deployed-model-id=$DEPLOYED_MODEL_ID
+
+# (Optional) Delete the endpoint
+gcloud ai endpoints delete $ENDPOINT_ID \
+  --region=YOUR_REGION \
+  --project=YOUR_PROJECT_ID --quiet
+
+# (Optional) Delete the model from Model Registry
+gcloud ai models delete $MODEL_ID \
+  --region=YOUR_REGION \
+  --project=YOUR_PROJECT_ID --quiet
+```
+
+> **⚠️ Important:** GPU VMs are billed per-minute while deployed. Always undeploy when done benchmarking.
+
 ## Repository Structure
 
 ```

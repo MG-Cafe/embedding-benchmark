@@ -50,9 +50,11 @@ hardware:
   dual_gpu:
     machine_type: "g4-standard-48"
     accelerator_type: "NVIDIA_RTX_PRO_6000"
-    accelerator_count: 2
-    tensor_parallel_size: 2
-    display_name_suffix: "2gpu"
+    accelerator_count: 1        # 1 GPU per node
+    tensor_parallel_size: 1     # 1 GPU per node
+    min_replica_count: 2        # 2 nodes (Vertex AI load-balanced)
+    max_replica_count: 2
+    display_name_suffix: "2node"
 
 # ---------------------------------------------------------------------------
 # Vertex AI Endpoint deployment settings

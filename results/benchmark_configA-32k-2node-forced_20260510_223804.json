@@ -149,8 +149,8 @@
       "latency_mean_ms": 0.0,
       "latency_min_ms": 0.0,
       "latency_max_ms": 0.0,
-      "error_rate": 0.0,
-      "all_under_20s": true
+      "error_rate": 1.0,
+      "all_under_20s": false
     },
     {
       "scenario_name": "ingest-max-context",
@@ -170,8 +170,8 @@
       "latency_mean_ms": 0.0,
       "latency_min_ms": 0.0,
       "latency_max_ms": 0.0,
-      "error_rate": 0.0,
-      "all_under_20s": true
+      "error_rate": 1.0,
+      "all_under_20s": false
     },
     {
       "scenario_name": "ingest-max-context",
@@ -191,8 +191,8 @@
       "latency_mean_ms": 0.0,
       "latency_min_ms": 0.0,
       "latency_max_ms": 0.0,
-      "error_rate": 0.0,
-      "all_under_20s": true
+      "error_rate": 1.0,
+      "all_under_20s": false
     },
     {
       "scenario_name": "ingest-max-context",
@@ -212,8 +212,8 @@
       "latency_mean_ms": 0.0,
       "latency_min_ms": 0.0,
       "latency_max_ms": 0.0,
-      "error_rate": 0.0,
-      "all_under_20s": true
+      "error_rate": 1.0,
+      "all_under_20s": false
     }
   ]
 }
