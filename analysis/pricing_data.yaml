@@ -21,41 +21,16 @@
 # =============================================================================
 
 # ---------------------------------------------------------------------------
-# G2 Instances (NVIDIA L4) — the user's current baseline
-# ---------------------------------------------------------------------------
-# Included for reference even though we're not benchmarking L4 in this POC.
-# the user currently runs 15-60 L4s on Cloud Run. These prices help them
 # compare their current costs against the new G4 results.
 # ---------------------------------------------------------------------------
 g2:
-  gpu_name: "NVIDIA L4"
-  gpu_memory_gb: 24
 
-  # g2-standard-8: 8 vCPU, 32 GB RAM, 1× L4
-  single_gpu:
-    machine_type: "g2-standard-8"
-    accelerator_count: 1
-    # On-demand pricing ($/hour) — us-central1
-    on_demand_hourly_usd: 1.402
-    # 1-year committed use discount (CUD) — typically 37% off
-    cud_1yr_hourly_usd: 0.883
-    # 3-year committed use discount — typically 55% off
-    cud_3yr_hourly_usd: 0.631
 
-  # g2-standard-24: 24 vCPU, 96 GB RAM, 2× L4
-  dual_gpu:
-    machine_type: "g2-standard-24"
-    accelerator_count: 2
-    on_demand_hourly_usd: 2.804
-    cud_1yr_hourly_usd: 1.767
-    cud_3yr_hourly_usd: 1.262
 
 # ---------------------------------------------------------------------------
 # G4 Instances (NVIDIA RTX Pro 6000) — What we're benchmarking
 # ---------------------------------------------------------------------------
 # RTX Pro 6000 has 96GB VRAM, higher memory bandwidth, and more CUDA cores
-# than the L4. The Jina team previously found better price/perf with
-# RTX 6000 vs L4 for embedding workloads.
 #
 # NOTE: G4 machine types and pricing may vary by region. These are
 # approximate values. Update with actual pricing from your GCP console.
@@ -68,7 +43,7 @@ g4:
   single_gpu:
     machine_type: "g4-standard-48"
     accelerator_count: 1
-    # TODO: Verify pricing from GCP console for your region
+    # On-demand pricing from GCP console for your region
     on_demand_hourly_usd: 3.054
     cud_1yr_hourly_usd: 1.924
     cud_3yr_hourly_usd: 1.374
@@ -81,7 +56,7 @@ g4:
     machine_type: "g4-standard-48"
     accelerator_count: 1          # 1 GPU per node
     num_nodes: 2                  # 2 separate Vertex AI replicas
-    # TODO: Verify pricing from GCP console for your region
+    # On-demand pricing from GCP console for your region
     # Total hourly cost = 2 × single-node cost
     on_demand_hourly_usd: 6.108   # 2 × 3.054
     cud_1yr_hourly_usd: 3.848     # 2 × 1.924

@@ -181,8 +181,8 @@ def deploy_model(
     Deploy the model to the endpoint on a GPU-equipped machine.
 
     This is where we specify:
-    - machine_type: The VM type (e.g., g2-standard-8 for 1 GPU)
-    - accelerator_type: The GPU type (NVIDIA_L4 for G2 instances)
+    - machine_type: The VM type (e.g., g4-standard-48 for RTX Pro 6000)
+    - accelerator_type: The GPU type (NVIDIA_RTX_PRO_6000 for G4 instances)
     - accelerator_count: Number of GPUs (1 or 2)
     - min/max_replica_count: Both set to 1 for benchmarking (fixed capacity)
 

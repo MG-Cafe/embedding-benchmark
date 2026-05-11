@@ -81,7 +81,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
 #
 # Note: vLLM automatically handles dynamic batching. Incoming requests are
 # queued and grouped into batches that maximize GPU utilization. The
-# --max-num-seqs parameter controls the maximum batch size (default: 256).
+# --max-num-seqs: Max concurrent sequences. Default is 256, we set 512 for higher throughput.
 # We don't override it here — we'll test different concurrency levels from
 # the client side and let vLLM's scheduler optimize batching.
 # =============================================================================

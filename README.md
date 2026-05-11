@@ -304,3 +304,15 @@ The benchmark simulates a **production batch embedding ingestion** workload with
 ## License
 
 Apache 2.0
+
+## Result Files Guide
+
+The `results/` directory contains benchmark data from multiple test runs:
+
+| File | Description | Status |
+|------|-------------|--------|
+| `benchmark_configA-8192_*.json/csv` | 1-GPU test with max-model-len=8192 | ✅ **Canonical 1-GPU results** (used in README tables) |
+| `benchmark_configA-32k-1gpu_*.json/csv` | 1-GPU test with max-model-len=32768 | Validation run (confirms 32k has no throughput penalty) |
+| `benchmark_configA-32k-2node-forced_*.json/csv` | 2-node test with min_replica=2 | ✅ **Canonical 2-node results** (used in README tables) |
+
+> **Note:** The `ingest-max-context` scenario entries in all files show `error_rate: 1.0` because the synthetic text generator produces texts exceeding the model's context window. Only the `ingest-default-chunk` scenario results are valid and reported in the README.
