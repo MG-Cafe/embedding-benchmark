@@ -30,51 +30,17 @@ A complete, reproducible benchmarking recipe for evaluating **Jina Embeddings V5
 
 **Peak: 26.4M tokens/min with 2× RTX Pro 6000 — perfect 2× linear scaling at high concurrency!**
 
-### Throughput Scaling Chart
+### Throughput Scaling
 
-```
-Throughput (M tokens/min)
- 28 ┤                                                          ●── 2-Node (26.4M)
- 26 ┤                                                     ●
- 24 ┤
- 22 ┤
- 20 ┤
- 18 ┤
- 16 ┤                                    ●
- 14 ┤               ■────────■────────■────────■── 1-GPU (13.2M) ← GPU saturated
- 12 ┤          ■
- 10 ┤
-  8 ┤     ■    ●
-  6 ┤
-  4 ┤
-  2 ┤ ●■
-  0 ┼────┬────┬────┬────┬────┬────┬──
-     1    4   16   32   64  128  Concurrency
-    
-    ■ = 1-GPU    ● = 2-Node (forced min=2)
-```
+![Throughput Scaling — 1-GPU vs 2-Node](assets/throughput_scaling.png)
+
+### 1-GPU vs 2-Node Comparison
+
+![1-GPU vs 2-Node Scaling](assets/1gpu_vs_2node.png)
 
 ### Latency vs Throughput Trade-off
 
-```
-p50 Latency (ms)
-5000 ┤                              ■
-4000 ┤
-3000 ┤
-2500 ┤                         ●
-2400 ┤                    ■
-2000 ┤
-1200 ┤          ■    ●
-1000 ┤ ■■■■          
- 960 ┤ ●●●●
- 500 ┤
-   0 ┼────┬─────────┬─────────┬──────
-      0   5M       13M       26M   Throughput (tok/min)
-      
-    ■ = 1-GPU    ● = 2-Node
-    Sweet spot: 13M tok/min @ 1.2s latency (1-GPU)
-                26M tok/min @ 2.4s latency (2-Node)
-```
+![Latency vs Throughput](assets/latency_vs_throughput.png)
 
 ### Key Findings
 
