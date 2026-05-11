@@ -254,9 +254,11 @@ def get_benchmark_scenarios(config: dict) -> list[BenchmarkScenario]:
         # Some the target application users send very large documents without chunking,
         # or use large chunk sizes. The model supports up to 32k tokens.
         #
-        # With batch_size=16 and 32,768 tokens each, each request contains
-        # ~524,288 tokens total. This is an extremely heavy request that
-        # will stress GPU memory and compute.
+        # With batch_size=1 and 32,768 tokens, each request contains
+        # ~32,768 tokens total. We use batch_size=1 because
+        # 1×32768=32768 fits within max_num_batched_tokens=65536.
+        # Using batch_size=16 would require 524,288 tokens per request,
+        # far exceeding the batched token limit.
         #
         # We test fewer concurrency levels (1-32) because:
         # - Very high concurrency with 32k inputs may cause OOM
@@ -270,11 +272,14 @@ def get_benchmark_scenarios(config: dict) -> list[BenchmarkScenario]:
             name="ingest-max-context",
             description=(
                 "Async batch ingest with maximum context window. "
-                "Batch of 16 texts × ~32,768 tokens each = ~524,288 tokens/request. "
+                "1 text × ~32,768 tokens per request. "
                 "Worst case scenario when users send very large documents. "
                 "Lower concurrency tested to avoid OOM."
             ),
-            batch_size=bench_config["batch_size"],
+            # batch_size=1 for max context: 1×32768=32768 tokens fits within
+            # vLLM's max_num_batched_tokens=65536. Using batch_size=16 would
+            # require 16×32768=524288 tokens per request, exceeding the limit.
+            batch_size=bench_config.get("batch_size_max_context", 1),
             target_tokens_per_text=bench_config["token_lengths"]["max_context"],
             concurrency_levels=bench_config["concurrency_levels_32k"],
             duration_seconds=bench_config["duration_seconds"],

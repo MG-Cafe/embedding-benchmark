@@ -200,6 +200,7 @@ embedding-benchmark/
 ├── deploy/
 │   ├── Dockerfile                # vLLM v0.20.1 serving container
 │   ├── config.yaml               # GCP project/region configuration
+│   ├── deploy_vertex.py          # Vertex AI deployment script
 │   └── cleanup_vertex.py         # Resource cleanup utility
 ├── analysis/
 │   ├── cost_calculator.py        # Throughput-vs-cost matrix calculator
@@ -208,10 +209,7 @@ embedding-benchmark/
 ├── results/
 │   ├── benchmark_configA-8192_*.json          # 1-GPU (8k context) raw results
 │   ├── benchmark_configA-32k-1gpu_*.json      # 1-GPU (32k context) raw results
-│   ├── benchmark_configA-32k-2node-forced_*.json  # 2-node forced raw results
-│   ├── raw_1gpu_terminal_output.log           # Terminal output (1-GPU run)
-│   ├── raw_1gpu_32k_terminal_output.log       # Terminal output (1-GPU 32k run)
-│   └── raw_2node_forced_terminal_output.log   # Terminal output (2-node run)
+│   └── benchmark_configA-32k-2node-forced_*.json  # 2-node forced raw results
 └── README.md                     # This file
 ```
 

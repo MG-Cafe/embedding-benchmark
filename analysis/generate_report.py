@@ -369,7 +369,7 @@ def generate_full_report(
     lines.append(f"## Jina Embeddings V5 Text Small on Vertex AI\n")
     lines.append(f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
     lines.append(f"**Model**: `jinaai/jina-embeddings-v5-text-small`\n")
-    lines.append(f"**Serving Framework**: vLLM v0.15.1\n")
+    lines.append(f"**Serving Framework**: vLLM v0.20.1\n")
     lines.append(f"**Platform**: Google Cloud Vertex AI\n")
 
     # GPU configs tested

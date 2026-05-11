@@ -143,6 +143,9 @@ class ConcurrencyResult:
         self.failed_requests = self.total_requests - self.successful_requests
 
         if not successful:
+            # All requests failed — set error_rate to 100% and mark as failing 20s check
+            self.error_rate = 1.0
+            self.all_under_20s = False
             return
 
         # Throughput: computed over the actual measurement window

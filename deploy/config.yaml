@@ -2,23 +2,82 @@
 # Benchmark Configuration
 # =============================================================================
 # Update these values for your GCP project before running.
+#
+# All keys referenced by:
+#   - deploy/deploy_vertex.py (deployment)
+#   - deploy/cleanup_vertex.py (cleanup)
+#   - benchmark/run_benchmark.py (orchestrator)
+#   - benchmark/workload_profiles.py (scenario definitions)
+#   - benchmark/load_generator.py (endpoint URL builder)
 # =============================================================================
 
+# ---------------------------------------------------------------------------
+# Google Cloud Platform settings
+# ---------------------------------------------------------------------------
 gcp:
   project_id: "YOUR_PROJECT_ID"
   region: "europe-west4"  # RTX Pro 6000 regions: us-central1, us-east4, europe-west4
 
+  # Artifact Registry — where the vLLM container image is stored
+  artifact_registry:
+    repository: "embedding-benchmark"
+    image_name: "jina-v5-vllm"
+    image_tag: "v0.20.1"
+
+# ---------------------------------------------------------------------------
+# Model / serving configuration
+# ---------------------------------------------------------------------------
 model:
-  name: "jinaai/jina-embeddings-v5-text-small"
-  task: "embed"
+  hf_model_id: "jinaai/jina-embeddings-v5-text-small"
+  display_name: "jina-v5-embedding"
+  serving_port: 8000
+  predict_route: "/v1/embeddings"
+  health_route: "/health"
+  max_model_len: 32768
+  dtype: "bfloat16"
 
-gpu:
-  type: "nvidia-rtx-pro-6000"
-  machine_type: "g4-standard-48"
-  vram_gb: 96
-  count: 1
+# ---------------------------------------------------------------------------
+# Hardware configurations (single-GPU and dual-GPU)
+# ---------------------------------------------------------------------------
+hardware:
+  single_gpu:
+    machine_type: "g4-standard-48"
+    accelerator_type: "NVIDIA_RTX_PRO_6000"
+    accelerator_count: 1
+    tensor_parallel_size: 1
+    display_name_suffix: "1gpu"
 
+  dual_gpu:
+    machine_type: "g4-standard-48"
+    accelerator_type: "NVIDIA_RTX_PRO_6000"
+    accelerator_count: 2
+    tensor_parallel_size: 2
+    display_name_suffix: "2gpu"
+
+# ---------------------------------------------------------------------------
+# Vertex AI Endpoint deployment settings
+# ---------------------------------------------------------------------------
+endpoint:
+  min_replica_count: 1
+  max_replica_count: 1
+  traffic_percentage: 100
+  deploy_timeout: 1800  # 30 minutes
+
+# ---------------------------------------------------------------------------
+# Benchmark parameters
+# ---------------------------------------------------------------------------
 benchmark:
-  warmup_seconds: 10
-  measurement_seconds: 60
-  concurrency_levels: [1, 4, 16, 32, 64, 128]
+  batch_size: 16                       # texts per request (default ingest batch)
+  batch_size_max_context: 1            # batch_size=1 for 32k so 1×32768=32768 fits in max_num_batched_tokens=65536
+
+  token_lengths:
+    default_chunk: 512                 # ~250 words, default chunk size
+    max_context: 32768                 # full model context window
+
+  concurrency_levels: [1, 4, 16, 32, 64, 128]       # ramp for 512-token scenario
+  concurrency_levels_32k: [1, 4, 16, 32]             # lower for 32k to avoid OOM
+
+  duration_seconds: 60                 # measurement window per concurrency level
+  warmup_seconds: 10                   # warmup before measurement starts
+
+  results_dir: "results"               # where JSON/CSV output is saved

@@ -10,11 +10,11 @@
 # 2. It handles dynamic batching automatically (groups incoming requests into
 #    efficient GPU batches without client-side coordination)
 # 3. It supports tensor parallelism across multiple GPUs (needed for 2-GPU test)
-# 4. It's the framework commonly used for serving (vLLM v0.15.1)
+# 4. It's the framework commonly used for serving (vLLM v0.20.1)
 #
 # The model (jina-embeddings-v5-text-small) is a ~230M parameter embedding model
 # with a 32k token context window. At BF16 precision, it fits comfortably on a
-# single RTX Pro 6000 (48GB VRAM), leaving room for large batch processing.
+# single RTX Pro 6000 (96GB VRAM), leaving room for large batch processing.
 #
 # Build:
 #   docker build -t <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/jina-v5-vllm:latest .
@@ -53,9 +53,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
 #          In production, you'd bake the weights into the image or use a
 #          GCS-mounted volume to avoid download time on cold start.
 #
-# --task: "embed" tells vLLM to run in embedding mode (not text generation).
-#         This enables the /v1/embeddings endpoint and disables /v1/completions.
-#
 # --host 0.0.0.0: Listen on all interfaces (required for container networking).
 #
 # --port 8000: Default port. Vertex AI custom containers must serve on 8080
@@ -79,6 +76,9 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
 # --disable-log-requests: Reduces log noise during benchmarking.
 #         Each request would otherwise print input/output details.
 #
+# Note: --task embed was removed in vLLM v0.20.1 — the task is now
+# auto-detected from the model architecture.
+#
 # Note: vLLM automatically handles dynamic batching. Incoming requests are
 # queued and grouped into batches that maximize GPU utilization. The
 # --max-num-seqs parameter controls the maximum batch size (default: 256).
@@ -89,7 +89,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
 ENTRYPOINT ["python3", "-m", "vllm.entrypoints.openai.api_server"]
 
 CMD ["--model", "jinaai/jina-embeddings-v5-text-small", \
-     "--task", "embed", \
      "--host", "0.0.0.0", \
      "--port", "8000", \
      "--max-model-len", "32768", \

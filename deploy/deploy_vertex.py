@@ -88,12 +88,11 @@ def build_container_args(config: dict, hw_config: dict) -> list[str]:
     and we want to set it dynamically based on the deployment configuration.
 
     Returns a list of arguments like:
-        ["--model", "jinaai/jina-embeddings-v5-text-small", "--task", "embed", ...]
+        ["--model", "jinaai/jina-embeddings-v5-text-small", ...]
     """
     model_config = config["model"]
     return [
         "--model", model_config["hf_model_id"],
-        "--task", "embed",
         "--host", "0.0.0.0",
         "--port", str(model_config["serving_port"]),
         "--max-model-len", str(model_config["max_model_len"]),
