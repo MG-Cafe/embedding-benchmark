@@ -30,6 +30,52 @@ A complete, reproducible benchmarking recipe for evaluating **Jina Embeddings V5
 
 **Peak: 26.4M tokens/min with 2× RTX Pro 6000 — perfect 2× linear scaling at high concurrency!**
 
+### Throughput Scaling Chart
+
+```
+Throughput (M tokens/min)
+ 28 ┤                                                          ●── 2-Node (26.4M)
+ 26 ┤                                                     ●
+ 24 ┤
+ 22 ┤
+ 20 ┤
+ 18 ┤
+ 16 ┤                                    ●
+ 14 ┤               ■────────■────────■────────■── 1-GPU (13.2M) ← GPU saturated
+ 12 ┤          ■
+ 10 ┤
+  8 ┤     ■    ●
+  6 ┤
+  4 ┤
+  2 ┤ ●■
+  0 ┼────┬────┬────┬────┬────┬────┬──
+     1    4   16   32   64  128  Concurrency
+    
+    ■ = 1-GPU    ● = 2-Node (forced min=2)
+```
+
+### Latency vs Throughput Trade-off
+
+```
+p50 Latency (ms)
+5000 ┤                              ■
+4000 ┤
+3000 ┤
+2500 ┤                         ●
+2400 ┤                    ■
+2000 ┤
+1200 ┤          ■    ●
+1000 ┤ ■■■■          
+ 960 ┤ ●●●●
+ 500 ┤
+   0 ┼────┬─────────┬─────────┬──────
+      0   5M       13M       26M   Throughput (tok/min)
+      
+    ■ = 1-GPU    ● = 2-Node
+    Sweet spot: 13M tok/min @ 1.2s latency (1-GPU)
+                26M tok/min @ 2.4s latency (2-Node)
+```
+
 ### Key Findings
 
 - **GPU saturates at concurrency ~32** on a single GPU — throughput plateaus at ~13M tok/min
@@ -197,7 +243,20 @@ The benchmark uses these optimized vLLM parameters for maximum embedding through
 | `--max-num-batched-tokens` | 65536 | Pack up to 65k tokens per GPU batch |
 | `--disable-log-stats` | enabled | Reduce serving overhead |
 
-## Benchmark Methodology
+## Benchmark Workload Profile
+
+The benchmark simulates a **production batch embedding ingestion** workload with these defaults:
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| **Batch size** | 16 texts/request | Standard batch size for embedding APIs |
+| **Tokens per text** | ~512 tokens (~250 words) | Default document chunk size |
+| **Tokens per request** | ~8,192 (16 × 512) | Total tokens per HTTP request |
+| **Max context window** | 32,768 tokens | Model's maximum supported length |
+| **Concurrency levels** | 1, 4, 16, 32, 64, 128 | Gradually increasing parallel workers |
+| **Warmup period** | 10 seconds | Requests sent but not measured |
+| **Measurement period** | 60 seconds | Per concurrency level |
+| **Request format** | OpenAI `/v1/embeddings` API | `{"input": [...], "model": "..."}` |
 
 ### Data Generation
 - **Synthetic English text** from common words (deterministic, no caching effects)
