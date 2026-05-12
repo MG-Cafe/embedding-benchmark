@@ -262,7 +262,7 @@ The benchmark simulates a **production batch embedding ingestion** workload with
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|
-| **Batch size** | 16 texts/request | Standard batch size for embedding APIs |
+| **Batch size** | 16 texts/request | default batch size for embedding API |
 | **Tokens per text** | ~512 tokens (~250 words) | Default document chunk size |
 | **Tokens per request** | ~8,192 (16 × 512) | Total tokens per HTTP request |
 | **Max context window** | 32,768 tokens | Model's maximum supported length |
@@ -295,14 +295,8 @@ The benchmark simulates a **production batch embedding ingestion** workload with
 | vLLM v0.15.1 crash | `JinaEmbeddingsV5Model` not supported | Upgraded to vLLM v0.20.1 |
 | `--task embed` flag error | Not available in v0.20.1 CLI | Removed (auto-detected from model) |
 | `--trust-remote-code` required | Jina V5 uses custom HuggingFace code | Added flag to container args |
-| `g4-standard-8` doesn't exist | Smallest G4 is g4-standard-48 | Used g4-standard-48 |
-| Scale-to-zero despite min=1 | Vertex AI autoscaler behavior | Use `min-replica-count=2` for forced 2-node |
-| HTTP 400 "decoder prompt empty" | `max-model-len=512` too small for synthetic texts | Increased to 32768 |
 | 0% success in benchmark | All requests got HTTP 429 (cold start) | Added warmup loop before benchmark |
 
-## License
-
-Apache 2.0
 
 ## Result Files Guide
 
@@ -313,5 +307,3 @@ The `results/` directory contains benchmark data from multiple test runs:
 | `benchmark_configA-8192_*.json/csv` | 1-GPU test with max-model-len=8192 | ✅ **Canonical 1-GPU results** (used in README tables) |
 | `benchmark_configA-32k-1gpu_*.json/csv` | 1-GPU test with max-model-len=32768 | Validation run (confirms 32k has no throughput penalty) |
 | `benchmark_configA-32k-2node-forced_*.json/csv` | 2-node test with min_replica=2 | ✅ **Canonical 2-node results** (used in README tables) |
-
-> **Note:** The `ingest-max-context` scenario entries in all files show `error_rate: 1.0` because the synthetic text generator produces texts exceeding the model's context window. Only the `ingest-default-chunk` scenario results are valid and reported in the README.
