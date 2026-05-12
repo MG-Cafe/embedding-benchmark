@@ -26,14 +26,14 @@ The matrix helps the user answer questions like:
     - "Does committing to 1-year CUD make sense for our usage?"
 
 Example Output:
-    GPU Config: 1× RTX Pro 6000 (on-demand: $3.054/hr)
+    GPU Config: 1× RTX Pro 6000 (on-demand: $4.50/hr)
 
     | Scenario             | Concurrency | Tokens/min  | $/M tokens | $/hr effective |
     |----------------------|-------------|-------------|------------|----------------|
-    | ingest-default-chunk | 1           | 500,000     | $0.102     | $3.054         |
-    | ingest-default-chunk | 16          | 4,000,000   | $0.013     | $3.054         |
-    | ingest-default-chunk | 64          | 6,500,000   | $0.008     | $3.054         |
-    | ingest-max-context   | 1           | 200,000     | $0.254     | $3.054         |
+    | ingest-default-chunk | 1           | 500,000     | $0.150     | $4.50          |
+    | ingest-default-chunk | 16          | 4,000,000   | $0.019     | $4.50          |
+    | ingest-default-chunk | 64          | 6,500,000   | $0.012     | $4.50          |
+    | ingest-max-context   | 1           | 200,000     | $0.375     | $4.50          |
     | ...                  | ...         | ...         | ...        | ...            |
 =============================================================================
 """
@@ -105,25 +105,20 @@ def get_gpu_pricing(pricing_data: dict, gpu_label: str) -> dict:
     Returns:
         Dict with pricing tiers:
         {
-            "on_demand": 3.054,
-            "cud_1yr": 1.924,
-            "cud_3yr": 1.374,
+            "on_demand": 4.50,
+            "cud_1yr": 2.835,
+            "cud_3yr": 2.025,
             "gpu_name": "NVIDIA RTX Pro 6000",
             "accelerator_count": 1,
         }
     """
-    # Parse gpu_label to determine GPU family and count
+    # Parse gpu_label to determine GPU count (single vs dual)
     label_lower = gpu_label.lower()
 
-    if "rtx" in label_lower or "g4" in label_lower:
-        family = "g4"
-    elif "l4" in label_lower or "g2" in label_lower:
-        family = "g2"
-    else:
-        # Default to G4 since that's what we're benchmarking
-        family = "g4"
+    # This benchmark targets G4 (RTX Pro 6000) only
+    family = "g4"
 
-    if "2x" in label_lower or "2gpu" in label_lower or "dual" in label_lower:
+    if "2x" in label_lower or "2gpu" in label_lower or "dual" in label_lower or "2node" in label_lower:
         config_key = "dual_gpu"
     else:
         config_key = "single_gpu"

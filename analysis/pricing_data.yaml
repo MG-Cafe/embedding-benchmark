@@ -8,9 +8,6 @@
 # Pricing source: https://cloud.google.com/compute/gpus-pricing
 # Last updated: May 2026
 #
-# IMPORTANT: Verify these prices against the current GCP pricing page
-# before sharing results with the user. GPU pricing changes periodically.
-#
 # How cost calculation works:
 #   1. We measure throughput (tokens/sec) at each concurrency level
 #   2. We calculate tokens/hour = tokens/sec × 3600
@@ -21,19 +18,10 @@
 # =============================================================================
 
 # ---------------------------------------------------------------------------
-# compare their current costs against the new G4 results.
-# ---------------------------------------------------------------------------
-g2:
-
-
-
-# ---------------------------------------------------------------------------
 # G4 Instances (NVIDIA RTX Pro 6000) — What we're benchmarking
 # ---------------------------------------------------------------------------
-# RTX Pro 6000 has 96GB VRAM, higher memory bandwidth, and more CUDA cores
-#
-# NOTE: G4 machine types and pricing may vary by region. These are
-# approximate values. Update with actual pricing from your GCP console.
+# RTX Pro 6000 has 96GB VRAM, higher memory bandwidth, and more CUDA cores.
+# On-demand GPU price: $4.50/hr per GPU.
 # ---------------------------------------------------------------------------
 g4:
   gpu_name: "NVIDIA RTX Pro 6000"
@@ -43,10 +31,9 @@ g4:
   single_gpu:
     machine_type: "g4-standard-48"
     accelerator_count: 1
-    # On-demand pricing from GCP console for your region
-    on_demand_hourly_usd: 3.054
-    cud_1yr_hourly_usd: 1.924
-    cud_3yr_hourly_usd: 1.374
+    on_demand_hourly_usd: 4.50
+    cud_1yr_hourly_usd: 2.835      # ~37% discount
+    cud_3yr_hourly_usd: 2.025      # ~55% discount
 
   # 2-node config: 2× g4-standard-48 each with 1× RTX Pro 6000
   # Architecture: 2 separate Vertex AI replicas (nodes), load-balanced.
@@ -56,8 +43,7 @@ g4:
     machine_type: "g4-standard-48"
     accelerator_count: 1          # 1 GPU per node
     num_nodes: 2                  # 2 separate Vertex AI replicas
-    # On-demand pricing from GCP console for your region
     # Total hourly cost = 2 × single-node cost
-    on_demand_hourly_usd: 6.108   # 2 × 3.054
-    cud_1yr_hourly_usd: 3.848     # 2 × 1.924
-    cud_3yr_hourly_usd: 2.749     # 2 × 1.374 (rounding)
+    on_demand_hourly_usd: 9.00    # 2 × 4.50
+    cud_1yr_hourly_usd: 5.67      # 2 × 2.835
+    cud_3yr_hourly_usd: 4.05      # 2 × 2.025
