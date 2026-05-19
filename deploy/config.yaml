@@ -15,8 +15,8 @@
 # Google Cloud Platform settings
 # ---------------------------------------------------------------------------
 gcp:
-  project_id: "YOUR_PROJECT_ID"
-  region: "europe-west4"  # RTX Pro 6000 regions: us-central1, us-east4, europe-west4
+  project_id: ${PROJECT_ID}
+  region: ${REGION}
 
   # Artifact Registry — where the vLLM container image is stored
   artifact_registry:

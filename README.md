@@ -93,6 +93,20 @@ Local Machine (benchmark client)
 - Python 3.10+ with `pip install aiohttp numpy pyyaml`
 - RTX Pro 6000 quota in your region (check: `gcloud compute accelerator-types list --filter="name:nvidia-rtx-pro-6000"`)
 
+
+### Step 0: Set your environment variables
+
+```bash
+export PROJECT_ID="your-actual-project"
+export REGION="your-actual-region"
+export MODEL_ID="jina-v5-embedding"
+export ENDPOINT_ID="jina-v5-embedding-endpoint"
+export IMAGE_VERSION="vllm:v0.20.1"
+export IMAGE_URI="${REGION}-docker.pkg.dev/${PROJECT_ID}/embedding-benchmark/${IMAGE_VERSION}"
+export ENDPOINT_URI="https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/endpoints/${ENDPOINT_ID}:rawPredict"
+```
+
+
 ### Step 1: Build and Push the Container
 
 ```bash
@@ -101,14 +115,14 @@ cd deploy
 # Create Artifact Registry repo (if needed)
 gcloud artifacts repositories create embedding-benchmark \
   --repository-format=docker \
-  --location=YOUR_REGION \
-  --project=YOUR_PROJECT_ID
+  --location=$REGION \
+  --project=$PROJECT_ID
 
 # Build with Cloud Build
 gcloud builds submit \
-  --project=YOUR_PROJECT_ID \
-  --region=YOUR_REGION \
-  --tag=YOUR_REGION-docker.pkg.dev/YOUR_PROJECT_ID/embedding-benchmark/jina-v5-vllm:v0.20.1 \
+  --project=$PROJECT_ID \
+  --region=$REGION \
+  --tag=$IMAGE_URI \
   --timeout=1800
 ```
 
@@ -116,10 +130,10 @@ gcloud builds submit \
 
 ```bash
 gcloud ai models upload \
-  --region=YOUR_REGION \
-  --project=YOUR_PROJECT_ID \
-  --display-name=jina-v5-embedding \
-  --container-image-uri=YOUR_REGION-docker.pkg.dev/YOUR_PROJECT_ID/embedding-benchmark/jina-v5-vllm:v0.20.1 \
+  --region=$REGION \
+  --project=$PROJECT_ID \
+  --display-name=$MODEL_ID \
+  --container-image-uri=$IMAGE_URI \
   --container-predict-route=/v1/embeddings \
   --container-health-route=/health \
   --container-ports=8000 \
@@ -131,22 +145,22 @@ gcloud ai models upload \
 ```bash
 # Create endpoint
 gcloud ai endpoints create \
-  --region=YOUR_REGION \
-  --project=YOUR_PROJECT_ID \
-  --display-name=jina-v5-endpoint
+  --region=$REGION \
+  --project=$PROJECT_ID \
+  --display-name=$ENDPOINT_ID
 
 # Get model ID
-MODEL_ID=$(gcloud ai models list --region=YOUR_REGION --project=YOUR_PROJECT_ID \
+MODEL_ID=$(gcloud ai models list --region=$REGION --project=$PROJECT_ID \
   --filter="displayName:jina-v5-embedding" --format="value(name)")
 
 # Get endpoint ID
-ENDPOINT_ID=$(gcloud ai endpoints list --region=YOUR_REGION --project=YOUR_PROJECT_ID \
+ENDPOINT_ID=$(gcloud ai endpoints list --region=$REGION --project=$PROJECT_ID \
   --filter="displayName:jina-v5-endpoint" --format="value(name)")
 
 # Deploy (1 GPU)
 gcloud ai endpoints deploy-model $ENDPOINT_ID \
-  --region=YOUR_REGION \
-  --project=YOUR_PROJECT_ID \
+  --region=$REGION \
+  --project=$PROJECT_ID \
   --model=$MODEL_ID \
   --display-name=jina-v5-1gpu \
   --machine-type=g4-standard-48 \
@@ -157,8 +171,8 @@ gcloud ai endpoints deploy-model $ENDPOINT_ID \
 
 # Deploy (2 GPUs for scaling test)
 gcloud ai endpoints deploy-model $ENDPOINT_ID \
-  --region=YOUR_REGION \
-  --project=YOUR_PROJECT_ID \
+  --region=$REGION \
+  --project=$PROJECT_ID \
   --model=$MODEL_ID \
   --display-name=jina-v5-2gpu \
   --machine-type=g4-standard-48 \
@@ -172,13 +186,13 @@ gcloud ai endpoints deploy-model $ENDPOINT_ID \
 
 ```bash
 # Update config
-sed -i '' 's/YOUR_PROJECT_ID/your-actual-project/g' deploy/config.yaml
+sed -i '' 's/$PROJECT_ID/your-actual-project/g' deploy/config.yaml
 
 # Warmup (wait for HTTP 200)
 TOKEN=$(gcloud auth application-default print-access-token)
 curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"input": ["warmup"], "model": "jinaai/jina-embeddings-v5-text-small"}' \
-  "https://YOUR_REGION-aiplatform.googleapis.com/v1/projects/YOUR_PROJECT_ID/locations/YOUR_REGION/endpoints/$ENDPOINT_ID:rawPredict"
+  "https://$REGION-aiplatform.googleapis.com/v1/projects/$PROJECT_ID/locations/$REGION/endpoints/$ENDPOINT_ID:rawPredict"
 
 # Run benchmark
 python3 -u benchmark/run_benchmark.py \
@@ -194,24 +208,24 @@ After benchmarking, undeploy the model and delete resources to stop billing:
 ```bash
 # Get deployed model ID
 DEPLOYED_MODEL_ID=$(gcloud ai endpoints describe $ENDPOINT_ID \
-  --region=YOUR_REGION --project=YOUR_PROJECT_ID \
+  --region=$REGION --project=$PROJECT_ID \
   --format="value(deployedModels[0].id)")
 
 # Undeploy the model (stops GPU billing)
 gcloud ai endpoints undeploy-model $ENDPOINT_ID \
-  --region=YOUR_REGION \
-  --project=YOUR_PROJECT_ID \
+  --region=$REGION \
+  --project=$PROJECT_ID \
   --deployed-model-id=$DEPLOYED_MODEL_ID
 
 # (Optional) Delete the endpoint
 gcloud ai endpoints delete $ENDPOINT_ID \
-  --region=YOUR_REGION \
-  --project=YOUR_PROJECT_ID --quiet
+  --region=$REGION \
+  --project=$PROJECT_ID --quiet
 
 # (Optional) Delete the model from Model Registry
 gcloud ai models delete $MODEL_ID \
-  --region=YOUR_REGION \
-  --project=YOUR_PROJECT_ID --quiet
+  --region=$REGION \
+  --project=$PROJECT_ID --quiet
 ```
 
 > **⚠️ Important:** GPU VMs are billed per-minute while deployed. Always undeploy when done benchmarking.
