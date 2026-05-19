@@ -100,9 +100,9 @@ Local Machine (benchmark client)
 export PROJECT_ID="your-actual-project"
 export REGION="your-actual-region"
 export MODEL_ID="jina-v5-embedding"
-export ENDPOINT_ID="jina-v5-endpoint"
-export MODEL_VERSION="jina-v5-vllm:v0.20.1"
-export MODEL_URI="${REGION}-docker.pkg.dev/${PROJECT_ID}/embedding-benchmark/${MODEL_VERSION}"
+export ENDPOINT_ID="jina-v5-embedding-endpoint"
+export IMAGE_VERSION="vllm:v0.20.1"
+export IMAGE_URI="${REGION}-docker.pkg.dev/${PROJECT_ID}/embedding-benchmark/${IMAGE_VERSION}"
 export ENDPOINT_URI="https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/endpoints/${ENDPOINT_ID}:rawPredict"
 ```
 
@@ -122,7 +122,7 @@ gcloud artifacts repositories create embedding-benchmark \
 gcloud builds submit \
   --project=$PROJECT_ID \
   --region=$REGION \
-  --tag=$MODEL_URI \
+  --tag=$IMAGE_URI \
   --timeout=1800
 ```
 
@@ -133,7 +133,7 @@ gcloud ai models upload \
   --region=$REGION \
   --project=$PROJECT_ID \
   --display-name=$MODEL_ID \
-  --container-image-uri=$MODEL_URI \
+  --container-image-uri=$IMAGE_URI \
   --container-predict-route=/v1/embeddings \
   --container-health-route=/health \
   --container-ports=8000 \
